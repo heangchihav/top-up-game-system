@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
+import AvatarModal from './AvatarModal';
+import SmallScreenNav from './SmallScreenNav';
 
 const Navbar: React.FC = () => {
     return (
@@ -29,14 +31,8 @@ const Navbar: React.FC = () => {
                     <Text style={styles.menuText}>Contact</Text>
                 </TouchableOpacity>
             </View>
-
-            {/* Right: Account */}
             <View style={styles.rightSection}>
-                <TouchableOpacity style={styles.accountButton} activeOpacity={0.7}>
-                    <Text style={styles.accountText}>Account</Text>
-                </TouchableOpacity>
-                <LanguageSwitcher />
-                <ThemeSwitcher />
+                <AvatarModal />
             </View>
         </View>
     );
@@ -44,20 +40,17 @@ const Navbar: React.FC = () => {
 
 const styles = StyleSheet.create({
     navbar: {
-        zIndex: 1000,
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        padding: 10,
     },
     leftSection: {
         justifyContent: 'center',
     },
     centerSection: {
+        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -67,10 +60,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    logoText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
     menuItem: {
         marginHorizontal: 10,
     },
@@ -78,15 +67,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
-    accountButton: {
-        padding: 8,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 4,
-    },
-    accountText: {
-        fontSize: 16,
-        color: '#333',
-    },
+
 });
 
 export default Navbar;

@@ -5,7 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '@/app/[lang]/index';
 import ContactScreen from '@/app/[lang]/contact';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DrawerNavigator } from './DrawerNavigation';
+import SmallScreenNav from '@/components/SmallScreenNav';
+// import { DrawerNavigator } from './DrawerNavigation';
 
 export default function TabsNavigator() {
   const Tabs = createBottomTabNavigator();
@@ -14,46 +15,49 @@ export default function TabsNavigator() {
   const isDark = theme === 'dark';
 
   return (
-    <Tabs.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: isDark ? '#1a1a1a' : 'white',
-          borderTopColor: isDark ? '#333' : '#e5e5e5',
-        },
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: isDark ? '#888' : '#666',
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        component={DrawerNavigator}
-        options={{
-          title: language === 'fr' ? 'Accueil' : 'Home',
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? 'home' : 'home-outline'}
-              size={size}
-              color={color}
-            />
-          ),
+    <>
+      <SmallScreenNav />
+      <Tabs.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: isDark ? '#1a1a1a' : 'white',
+            borderTopColor: isDark ? '#333' : '#e5e5e5',
+          },
+          tabBarActiveTintColor: '#007AFF',
+          tabBarInactiveTintColor: isDark ? '#888' : '#666',
         }}
-      />
-      <Tabs.Screen
-        name="Account"
-        component={ContactScreen}
-        options={{
-          title: language === 'fr' ? 'Account' : 'Account',
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? 'person' : 'person-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
+      >
+        <Tabs.Screen
+          name="index"
+          component={HomeScreen}
+          options={{
+            title: language === 'fr' ? 'Accueil' : 'Home',
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Account"
+          component={ContactScreen}
+          options={{
+            title: language === 'fr' ? 'Account' : 'Account',
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? 'person' : 'person-outline'}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-    </Tabs.Navigator>
+      </Tabs.Navigator>
+    </>
   );
 }
