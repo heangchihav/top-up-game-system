@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '@/app/[lang]/index';
 import ContactScreen from '@/app/[lang]/contact';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { DrawerNavigator } from './DrawerNavigation';
 
 export default function TabsNavigator() {
   const Tabs = createBottomTabNavigator();
@@ -26,7 +27,7 @@ export default function TabsNavigator() {
     >
       <Tabs.Screen
         name="index"
-        component={HomeScreen}
+        component={DrawerNavigator}
         options={{
           title: language === 'fr' ? 'Accueil' : 'Home',
           tabBarIcon: ({ focused, color, size }) => (
@@ -39,13 +40,13 @@ export default function TabsNavigator() {
         }}
       />
       <Tabs.Screen
-        name="contact"
+        name="Account"
         component={ContactScreen}
         options={{
-          title: language === 'fr' ? 'Contact' : 'Contact',
+          title: language === 'fr' ? 'Account' : 'Account',
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'mail' : 'mail-outline'}
+              name={focused ? 'person' : 'person-outline'}
               size={size}
               color={color}
             />

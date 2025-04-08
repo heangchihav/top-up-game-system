@@ -11,21 +11,25 @@ export default function HomeScreen() {
   return (
     <View style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#ffffff' }]}>
       <Slider />
-      <Text style={[styles.text, { color: isDark ? '#ffffff' : '#000000' }]}>
-        {language === 'fr' ? 'Page d\'accueil' : 'Home Page'}
-      </Text>
+      <View style={styles.ContentContainer}>
+        <Text style={[styles.text, { color: isDark ? '#ffffff' : '#000000' }]}>
+          {language === 'fr' ? 'Page d\'accueil' : 'Home Page'}
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    height: '100%',
   },
   text: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  ContentContainer: {
+    marginBottom: 20,
+    height: '100%',
   },
 });

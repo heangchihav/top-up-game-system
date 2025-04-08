@@ -116,8 +116,8 @@ const Slider = () => {
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item, index }) => (
                     <View style={styles.itemContainer}>
-                        <Image source={{ uri: item.image }} style={[styles.image, { height: isLargeScreen ? 500 : 300 }]} />
-                        <Text style={styles.title}>{item.title}</Text>
+                        <Image source={{ uri: item.image }} style={[styles.image, { height: isLargeScreen ? 500 : 200 }]} />
+                        {/* <Text style={styles.title}>{item.title}</Text> */}
                     </View>
                 )}
                 keyExtractor={(_, index) => index.toString()}
@@ -184,21 +184,17 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 10,
         top: '50%',
-        backgroundColor: 'rgba(255,255,255,0.7)',
-        borderRadius: 20,
-        padding: 10,
         zIndex: 10,
+        padding: 10,
         transform: [{ translateY: -50 }],
     },
     rightArrow: {
         position: 'absolute',
         right: 10,
         top: '50%',
-        backgroundColor: 'rgba(255,255,255,0.7)',
-        borderRadius: 20,
-        padding: 10,
         zIndex: 10,
         transform: [{ translateY: -50 }],
+        padding: 10,
     },
     arrowText: {
         fontSize: 24,

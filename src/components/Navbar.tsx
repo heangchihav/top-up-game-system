@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
 
@@ -8,7 +8,10 @@ const Navbar: React.FC = () => {
         <View style={styles.navbar}>
             {/* Left: Logo */}
             <View style={styles.leftSection}>
-                <Text style={styles.logoText}>Logo</Text>
+                <Image
+                    source={{ uri: 'https://i.imgur.com/drzZwS1.png' }}
+                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
+                />
             </View>
 
             {/* Center: Menu */}
