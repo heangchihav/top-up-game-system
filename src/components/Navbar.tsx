@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from 'react-native';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
 import AvatarModal from './AvatarModal';
-import SmallScreenNav from './SmallScreenNav';
 
 const Navbar: React.FC = () => {
     return (
@@ -11,8 +10,8 @@ const Navbar: React.FC = () => {
             {/* Left: Logo */}
             <View style={styles.leftSection}>
                 <Image
-                    source={{ uri: 'https://i.imgur.com/drzZwS1.png' }}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
+                    source={{ uri: 'https://i.imgur.com/ReOshWF.png' }}
+                    style={styles.logo}
                 />
             </View>
 
@@ -31,7 +30,11 @@ const Navbar: React.FC = () => {
                     <Text style={styles.menuText}>Contact</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Right: Avatar / Theme */}
             <View style={styles.rightSection}>
+                <ThemeSwitcher />
+                <LanguageSwitcher />
                 <AvatarModal />
             </View>
         </View>
@@ -40,34 +43,51 @@ const Navbar: React.FC = () => {
 
 const styles = StyleSheet.create({
     navbar: {
-        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        margin: 10,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: Platform.OS === 'web' ? 'blur(10px)' : undefined,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 5,
     },
     leftSection: {
         justifyContent: 'center',
     },
-    centerSection: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+    logo: {
+        width: 130,
+        height: 35,
+        resizeMode: 'contain',
     },
-    rightSection: {
+    centerSection: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        gap: 12,
     },
     menuItem: {
-        marginHorizontal: 10,
+        marginHorizontal: 8,
     },
     menuText: {
         fontSize: 16,
-        color: '#333',
+        color: '#ffffff',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: 1,
     },
-
+    rightSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
 });
 
 export default Navbar;

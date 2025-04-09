@@ -12,10 +12,9 @@ import {
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { ImageSlider, ImageSliderType } from '@/data/SliderData';
 import { useIsLargeScreen } from '@/hooks/useIsLargeScreen';
-
+import { Ionicons as Icon } from '@expo/vector-icons';
 
 const Slider = () => {
-    // Call the useIsLargeScreen hook here
     const isLargeScreen = useIsLargeScreen();
     const flatListRef = useRef<FlatList>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,7 +68,7 @@ const Slider = () => {
                 index: info.index,
                 animated: true,
             });
-        }, 500); // Consider adjusting this delay based on experience/testing
+        }, 500);
     }, []);
 
     useEffect(() => {
@@ -104,7 +103,7 @@ const Slider = () => {
         },
     ]);
 
-    const data = ImageSlider.length > 0 ? ImageSlider : []; // Graceful fallback to empty data if ImageSlider is empty
+    const data = ImageSlider.length > 0 ? ImageSlider : [];
 
     return (
         <View style={styles.container}>
@@ -114,10 +113,34 @@ const Slider = () => {
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item, index }) => (
+                renderItem={({ item }) => (
                     <View style={styles.itemContainer}>
-                        <Image source={{ uri: item.image }} style={[styles.image, { height: isLargeScreen ? 500 : 200 }]} />
-                        {/* <Text style={styles.title}>{item.title}</Text> */}
+                        <Image
+                            source={{ uri: item.image }}
+                            style={[
+                                styles.image,
+                                { height: isLargeScreen ? 500 : 200 },
+                            ]}
+                        />
+
+                        {/* Arrows inside the image */}
+                        <TouchableOpacity
+                            style={styles.leftArrowInImage}
+                            onPress={scrollToPrev}
+                        >
+                            <View style={styles.arrowContainer}>
+                                <Icon name="chevron-back" size={24} color="#fff" />
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.rightArrowInImage}
+                            onPress={scrollToNext}
+                        >
+                            <View style={styles.arrowContainer}>
+                                <Icon name="chevron-forward" size={24} color="#fff" />
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 )}
                 keyExtractor={(_, index) => index.toString()}
@@ -128,16 +151,8 @@ const Slider = () => {
                     offset: width * index,
                     index,
                 })}
-                onScrollToIndexFailed={handleScrollToIndexFailed} // Handled debounced retry
+                onScrollToIndexFailed={handleScrollToIndexFailed}
             />
-
-            {/* Arrows */}
-            <TouchableOpacity style={styles.leftArrow} onPress={scrollToPrev}>
-                <Text style={styles.arrowText}>{'<'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.rightArrow} onPress={scrollToNext}>
-                <Text style={styles.arrowText}>{'>'}</Text>
-            </TouchableOpacity>
 
             {/* Indicator Dots */}
             <View style={styles.dotsContainer}>
@@ -165,41 +180,14 @@ const styles = StyleSheet.create({
     itemContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#fff',
+        position: 'relative',
+        paddingHorizontal: 20,
+        // backgroundColor: '#fff',
     },
     image: {
-        width: Dimensions.get('window').width - 20,
-        borderRadius: 10,
+        width: Dimensions.get('window').width - 40,
+        borderRadius: 20,
         resizeMode: 'cover',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginTop: 10,
-        color: '#333',
-        textAlign: 'center',
-    },
-    leftArrow: {
-        position: 'absolute',
-        left: 10,
-        top: '50%',
-        zIndex: 10,
-        padding: 10,
-        transform: [{ translateY: -50 }],
-    },
-    rightArrow: {
-        position: 'absolute',
-        right: 10,
-        top: '50%',
-        zIndex: 10,
-        transform: [{ translateY: -50 }],
-        padding: 10,
-    },
-    arrowText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
     },
     dotsContainer: {
         flexDirection: 'row',
@@ -218,5 +206,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#333',
         width: 10,
         height: 10,
+    },
+    leftArrowInImage: {
+        position: 'absolute',
+        left: 30,
+        top: '50%',
+        transform: [{ translateY: -20 }],
+        zIndex: 10,
+    },
+    rightArrowInImage: {
+        position: 'absolute',
+        right: 30,
+        top: '50%',
+        transform: [{ translateY: -20 }],
+        zIndex: 10,
+    },
+    arrowContainer: {
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        padding: 8,
+        borderRadius: 999,
     },
 });
