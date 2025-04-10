@@ -7,9 +7,10 @@ import {
   Animated,
   Easing,
   Modal,
-  FlatList,
-  Image,
   Pressable,
+  UIManager,
+  findNodeHandle,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeType, useTheme } from '@/contexts/ThemeContext';
@@ -21,13 +22,26 @@ export default function ThemeSwitcher() {
   const [buttonLayout, setButtonLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
   const buttonRef = useRef<View>(null);
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
+
+  const DROPDOWN_HEIGHT = 3 * 45 + 20; // Estimate height for 3 options
+
+  // Measure button position and update layout
+  const measureButton = () => {
+    if (buttonRef.current) {
+      const handle = findNodeHandle(buttonRef.current);
+      if (handle) {
+        UIManager.measure(handle, (_x, _y, width, height, pageX, pageY) => {
+          setButtonLayout({ x: pageX, y: pageY, width, height });
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     if (dropdownVisible) {
-      buttonRef.current?.measure((fx, fy, width, height, px, py) => {
-        setButtonLayout({ x: px, y: py, width, height });
-      });
-
+      measureButton();
       Animated.timing(dropdownAnim, {
         toValue: 1,
         duration: 200,
@@ -85,83 +99,89 @@ export default function ThemeSwitcher() {
     ],
   };
 
+  // Calculate dropdown position dynamically
+  const calculateDropdownPosition = () => {
+    const showAbove = buttonLayout.y + buttonLayout.height + DROPDOWN_HEIGHT > screenHeight;
+    const adjustedTop = showAbove ? buttonLayout.y - DROPDOWN_HEIGHT - 4 : buttonLayout.y + buttonLayout.height + 4;
+
+    const adjustedLeft = Math.min(buttonLayout.x, screenWidth - 180); // Avoid going out of screen
+
+    return {
+      top: adjustedTop,
+      left: adjustedLeft,
+    };
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.button, isDark && styles.buttonDark]}
-        onPress={() => setDropdownVisible(!dropdownVisible)}
         ref={buttonRef}
+        style={[styles.button, isDark && styles.buttonDark]}
+        onPress={() => {
+          setDropdownVisible((prev) => !prev);
+          setTimeout(measureButton, 0); // Ensure layout is updated
+        }}
         activeOpacity={0.8}
       >
-        <Text style={[styles.buttonText, isDark && styles.textDark]}>
-          {getThemeLabel(theme)}
-        </Text>
         {getThemeIcon(theme)}
-        <Ionicons
-          name={dropdownVisible ? 'chevron-up' : 'chevron-down'}
-          size={16}
-          color={isDark ? '#fff' : '#000'}
-        />
       </TouchableOpacity>
 
-      {/* Modal dropdown */}
-      <Modal
-        transparent
-        visible={dropdownVisible}
-        animationType="none"
-        onRequestClose={() => setDropdownVisible(false)}
-      >
-        <Pressable
-          style={styles.modalBackdrop}
-          onPress={() => setDropdownVisible(false)}
+      {dropdownVisible && (
+        <Modal
+          transparent
+          animationType="none"
+          visible={dropdownVisible}
+          onRequestClose={() => setDropdownVisible(false)}
         >
-          <Animated.View
-            style={[
-              styles.dropdown,
-              isDark && styles.dropdownDark,
-              dropdownStyle,
-              {
-                top: buttonLayout.y + buttonLayout.height + 4,
-                left: buttonLayout.x,
-                minWidth: buttonLayout.width,
-              },
-            ]}
-          >
-            {(['light', 'dark', 'system'] as ThemeType[]).map((themeOption) => {
-              const isActive = theme === themeOption;
-              return (
-                <TouchableOpacity
-                  key={themeOption}
-                  style={[
-                    styles.dropdownItem,
-                    isActive && (isDark ? styles.activeItemDark : styles.activeItem),
-                  ]}
-                  onPress={() => handleThemeChange(themeOption)}
-                  activeOpacity={0.7}
-                >
-                  <Text
+          <Pressable style={styles.modalBackdrop} onPress={() => setDropdownVisible(false)}>
+            <Animated.View
+              style={[
+                styles.dropdown,
+                isDark && styles.dropdownDark,
+                dropdownStyle,
+                calculateDropdownPosition(),
+                {
+                  minWidth: buttonLayout.width,
+                },
+              ]}
+            >
+              {(['light', 'dark', 'system'] as ThemeType[]).map((themeOption) => {
+                const isActive = theme === themeOption;
+                return (
+                  <TouchableOpacity
+                    key={themeOption}
                     style={[
-                      styles.dropdownText,
-                      isDark && styles.textDark,
-                      isActive && styles.activeText,
+                      styles.dropdownItem,
+                      isActive && (isDark ? styles.activeItemDark : styles.activeItem),
                     ]}
+                    onPress={() => handleThemeChange(themeOption)}
+                    activeOpacity={0.7}
                   >
-                    {getThemeLabel(themeOption)}
-                  </Text>
-                  {isActive && (
-                    <Ionicons
-                      name="checkmark"
-                      size={16}
-                      color={isDark ? '#fff' : '#000'}
-                      style={{ marginLeft: 'auto' }}
-                    />
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </Animated.View>
-        </Pressable>
-      </Modal>
+                    {getThemeIcon(themeOption)}
+                    <Text
+                      style={[
+                        styles.dropdownText,
+                        isDark && styles.textDark,
+                        isActive && styles.activeText,
+                      ]}
+                    >
+                      {getThemeLabel(themeOption)}
+                    </Text>
+                    {isActive && (
+                      <Ionicons
+                        name="checkmark"
+                        size={16}
+                        color={isDark ? '#fff' : '#000'}
+                        style={{ marginLeft: 'auto' }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </Animated.View>
+          </Pressable>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -177,25 +197,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 12,
     paddingVertical: 5,
-    borderRadius: 4,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#ddd',
-    gap: 8,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
   },
   buttonDark: {
     backgroundColor: '#222',
     borderColor: '#444',
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '500',
   },
   textDark: {
     color: '#fff',
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim background effect
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   dropdown: {
     position: 'absolute',
@@ -238,3 +256,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+

@@ -7,39 +7,54 @@ import {
   Animated,
   Easing,
   Modal,
-  FlatList,
   Image,
   Pressable,
+  Dimensions,
+  LayoutRectangle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Language, VALID_LANGUAGES, useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const languages = [
   { code: 'en', name: 'English', avatar: 'https://res.cloudinary.com/da8ox9rlr/image/upload/flags/1x1/sh_myho2n.jpg' },
   { code: 'fr', name: 'French', avatar: 'https://res.cloudinary.com/da8ox9rlr/image/upload/flags/1x1/yt_fnqbkh.jpg' },
-  // Add more languages here
 ];
 
 export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const dropdownAnim = useRef(new Animated.Value(0)).current;
-  const [buttonLayout, setButtonLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const { theme, isDark } = useTheme();
 
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [buttonLayout, setButtonLayout] = useState<LayoutRectangle | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  const dropdownAnim = useRef(new Animated.Value(0)).current;
   const buttonRef = useRef<View>(null);
+
+  const screenHeight = Dimensions.get('window').height;
+  const screenWidth = Dimensions.get('window').width;
+  const DROPDOWN_HEIGHT = languages.length * 45 + 20; // Estimate height
 
   useEffect(() => {
     if (dropdownVisible) {
-      buttonRef.current?.measure((fx, fy, width, height, px, py) => {
-        setButtonLayout({ x: px, y: py, width, height });
-      });
+      buttonRef.current?.measureInWindow((x, y, width, height) => {
+        const showAbove = y + height + 4 + DROPDOWN_HEIGHT > screenHeight;
+        const adjustedTop = showAbove ? y - DROPDOWN_HEIGHT - 4 : y + height + 4;
 
-      Animated.timing(dropdownAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-        easing: Easing.out(Easing.ease),
-      }).start();
+        setButtonLayout({ x, y, width, height });
+        setDropdownPosition({
+          top: adjustedTop,
+          left: Math.min(x, screenWidth - 180), // Avoid going out of screen
+        });
+
+        Animated.timing(dropdownAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+          easing: Easing.out(Easing.ease),
+        }).start();
+      });
     } else {
       Animated.timing(dropdownAnim, {
         toValue: 0,
@@ -60,15 +75,12 @@ export default function LanguageSwitcher() {
   );
 
   const getLanguageIcon = (languageCode: string) => {
-    const language = languages.find((lang) => lang.code === languageCode);
-    return language?.avatar ? (
-      <Image source={{ uri: language.avatar }} style={styles.flagIcon} />
-    ) : null;
+    const lang = languages.find((l) => l.code === languageCode);
+    return lang?.avatar ? <Image source={{ uri: lang.avatar }} style={styles.flagIcon} /> : null;
   };
 
   const getLanguageLabel = (languageCode: string) => {
-    const language = languages.find((lang) => lang.code === languageCode);
-    return language?.name || '';
+    return languages.find((lang) => lang.code === languageCode)?.name || '';
   };
 
   const dropdownStyle = {
@@ -86,39 +98,25 @@ export default function LanguageSwitcher() {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, isDark && styles.buttonDark]}
         onPress={() => setDropdownVisible(!dropdownVisible)}
         ref={buttonRef}
         activeOpacity={0.8}
       >
-        <Text style={styles.buttonText}>{getLanguageLabel(language)}</Text>
         {getLanguageIcon(language)}
-        <Ionicons
-          name={dropdownVisible ? 'chevron-up' : 'chevron-down'}
-          size={16}
-          color="#000"
-        />
       </TouchableOpacity>
 
-      {/* Modal dropdown */}
-      <Modal
-        transparent
-        visible={dropdownVisible}
-        animationType="none"
-        onRequestClose={() => setDropdownVisible(false)}
-      >
-        <Pressable
-          style={styles.modalBackdrop}
-          onPress={() => setDropdownVisible(false)}
-        >
+      <Modal transparent visible={dropdownVisible} animationType="none" onRequestClose={() => setDropdownVisible(false)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setDropdownVisible(false)}>
           <Animated.View
             style={[
               styles.dropdown,
+              isDark && styles.dropdownDark,
               dropdownStyle,
               {
-                top: buttonLayout.y + buttonLayout.height + 4,
-                left: buttonLayout.x,
-                minWidth: buttonLayout.width,
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                minWidth: buttonLayout?.width || 100,
               },
             ]}
           >
@@ -127,7 +125,10 @@ export default function LanguageSwitcher() {
               return (
                 <TouchableOpacity
                   key={lang.code}
-                  style={[styles.dropdownItem, isActive && styles.activeItem]}
+                  style={[
+                    styles.dropdownItem,
+                    isActive && (isDark ? styles.activeItemDark : styles.activeItem),
+                  ]}
                   onPress={() => handleLanguageChange(lang.code as Language)}
                   activeOpacity={0.7}
                 >
@@ -135,6 +136,7 @@ export default function LanguageSwitcher() {
                   <Text
                     style={[
                       styles.dropdownText,
+                      isDark && styles.textDark,
                       isActive && styles.activeText,
                     ]}
                   >
@@ -144,7 +146,7 @@ export default function LanguageSwitcher() {
                     <Ionicons
                       name="checkmark"
                       size={16}
-                      color="#000"
+                      color={isDark ? '#fff' : '#000'}
                       style={{ marginLeft: 'auto' }}
                     />
                   )}
@@ -167,25 +169,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 12,
+    paddingHorizontal: 9,
     paddingVertical: 5,
-    borderRadius: 4,
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: '#ddd',
-    gap: 8,
+    gap: 2,
+    width: 40,
+    height: 40,
   },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '500',
+  buttonDark: {
+    backgroundColor: '#222',
+    borderColor: '#444',
   },
   flagIcon: {
     width: 20,
     height: 20,
     borderRadius: 10,
-  },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dim background effect
   },
   dropdown: {
     position: 'absolute',
@@ -193,13 +193,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    padding: 10,
+    paddingVertical: 10,
     elevation: 5,
-    zIndex: 9999,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
+    zIndex: 9999,
+  },
+  dropdownDark: {
+    backgroundColor: '#222',
+    borderColor: '#444',
   },
   dropdownItem: {
     flexDirection: 'row',
@@ -208,15 +212,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
-  activeItem: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-  },
   dropdownText: {
     fontSize: 14,
     color: '#000',
   },
   activeText: {
     fontWeight: '600',
+  },
+  textDark: {
+    color: '#fff',
+  },
+  activeItem: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
+  activeItemDark: {
+    backgroundColor: '#333',
+    borderRadius: 8,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
 });

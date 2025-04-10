@@ -6,6 +6,7 @@ import HomeScreen from '@/app/[lang]/index';
 import ContactScreen from '@/app/[lang]/contact';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SmallScreenNav from '@/components/SmallScreenNav';
+import { View, StyleSheet } from 'react-native';
 // import { DrawerNavigator } from './DrawerNavigation';
 
 export default function TabsNavigator() {
@@ -17,6 +18,7 @@ export default function TabsNavigator() {
   return (
     <>
       <SmallScreenNav />
+      <View style={styles.container}></View>
       <Tabs.Navigator
         screenOptions={{
           headerShown: false,
@@ -61,3 +63,9 @@ export default function TabsNavigator() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: 10
+  },
+});

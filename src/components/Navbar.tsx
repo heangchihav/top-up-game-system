@@ -3,14 +3,17 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from 'react
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
 import AvatarModal from './AvatarModal';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Navbar: React.FC = () => {
+    const { isDark } = useTheme();
+
     return (
-        <View style={styles.navbar}>
+        <View style={[styles.navbar, { backgroundColor: isDark ? 'blue' : '#008fff' }]}>
             {/* Left: Logo */}
             <View style={styles.leftSection}>
                 <Image
-                    source={{ uri: 'https://i.imgur.com/ReOshWF.png' }}
+                    source={{ uri: 'https://i.imgur.com/QnX5mel.png' }}
                     style={styles.logo}
                 />
             </View>
@@ -46,13 +49,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
         margin: 10,
-        borderRadius: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderColor: 'rgb(49, 0, 0)',
         backdropFilter: Platform.OS === 'web' ? 'blur(10px)' : undefined,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 6 },
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     logo: {
-        width: 130,
-        height: 35,
+        width: 250,
+        height: 50,
         resizeMode: 'contain',
     },
     centerSection: {

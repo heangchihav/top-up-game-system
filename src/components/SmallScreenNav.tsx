@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons from @expo/vector-icons
 import SlideInModal from './SlideInModal';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const SmallScreenNav = () => {
   const [menuModalVisible, setMenuModalVisible] = useState(false);
-
+  const { isDark } = useTheme();
   const toggleModal = () => setMenuModalVisible((prev) => !prev);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDark ? '#222' : '#fff' }]}>
       <TouchableOpacity onPress={toggleModal} style={styles.menuIconContainer}>
-        <Ionicons name="menu" size={30} color="#333" />
+        <Ionicons name="menu" size={30} color={isDark ? '#fff' : '#000'} />
       </TouchableOpacity>
       <Image
-        source={{ uri: 'https://i.imgur.com/CDwyIk4.png' }}
+        source={{ uri: 'https://i.imgur.com/QnX5mel.png' }}
         style={styles.logo}
       />
       <View style={styles.placeholder} />
@@ -28,17 +29,16 @@ export default SmallScreenNav;
 const styles = StyleSheet.create({
   container: {
     height: 60,
-    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    padding: 33,
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
     elevation: 4,
   },
   menuIconContainer: {
-    padding: 10,
+
   },
   logo: {
     width: 180,
