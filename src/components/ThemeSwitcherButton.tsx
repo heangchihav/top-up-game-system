@@ -199,17 +199,17 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#ff9300',
     width: 40,
     height: 40,
     justifyContent: 'center',
   },
   buttonDark: {
-    backgroundColor: '#222',
-    borderColor: '#444',
+    backgroundColor: '#000000',
+    borderColor: '#ff9300',
   },
   textDark: {
-    color: '#fff',
+    color: '#ff9300',
   },
   modalBackdrop: {
     flex: 1,
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
   },
   dropdownDark: {
-    backgroundColor: '#222',
-    borderColor: '#444',
+    backgroundColor: '#000000',
+    borderColor: '#ff9300',
   },
   dropdownItem: {
     flexDirection: 'row',
@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     gap: 10,
+
   },
   activeItem: {
     backgroundColor: '#f0f0f0',
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 14,
-    color: '#000',
+    color: '#ff9300',
   },
   activeText: {
     fontWeight: '600',

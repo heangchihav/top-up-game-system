@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
     const { isDark } = useTheme();
 
     return (
-        <View style={[styles.navbar, { backgroundColor: isDark ? 'blue' : '#008fff' }]}>
+        <View style={[styles.navbar, { backgroundColor: isDark ? 'black' : '#c3e6ff' }]}>
             {/* Left: Logo */}
             <View style={styles.leftSection}>
                 <Image
@@ -50,21 +50,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         margin: 10,
+        marginHorizontal: 20,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'rgb(49, 0, 0)',
+        borderColor: '#ff9300',
+        padding: 2,
         backdropFilter: Platform.OS === 'web' ? 'blur(10px)' : undefined,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.15,
         shadowRadius: 10,
         elevation: 5,
+        paddingHorizontal: 10,
     },
     leftSection: {
         justifyContent: 'center',
     },
     logo: {
-        width: 250,
+        width: 140,
         height: 50,
         resizeMode: 'contain',
     },
@@ -78,10 +81,8 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 16,
-        color: '#ffffff',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
+        letterSpacing: 2,
+        color: '#ff9300',
     },
     rightSection: {
         flexDirection: 'row',

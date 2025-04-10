@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     dotsContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
         marginTop: 10,
         marginBottom: 10,
     },
@@ -199,13 +200,14 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#ccc',
+        backgroundColor: '#c3e6ff',
         marginHorizontal: 4,
     },
     activeDot: {
-        backgroundColor: '#333',
-        width: 10,
+        backgroundColor: '#ff9300',
+        width: 15,
         height: 10,
+        borderRadius: 30,
     },
     leftArrowInImage: {
         position: 'absolute',

@@ -67,8 +67,8 @@ const AvatarModal: React.FC = () => {
 
 const styles = StyleSheet.create({
     avatar: {
-        width: 70,
-        height: 70,
+        width: 40,
+        height: 40,
         borderRadius: 50,
         borderWidth: 3,
         borderColor: 'transparent', // Border color is managed by gradient
