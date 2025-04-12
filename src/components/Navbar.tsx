@@ -4,10 +4,14 @@ import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
 import AvatarModal from './AvatarModal';
 import { useTheme } from '@/contexts/ThemeContext';
-
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@/types/navigation';
 const Navbar: React.FC = () => {
     const { isDark } = useTheme();
 
+    type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+    const navigation = useNavigation<NavigationProp>();
     return (
         <View style={[styles.navbar, { backgroundColor: isDark ? 'black' : '#c3e6ff' }]}>
             {/* Left: Logo */}
@@ -29,7 +33,7 @@ const Navbar: React.FC = () => {
                 <TouchableOpacity style={styles.menuItem}>
                     <Text style={styles.menuText}>Services</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('contact')}>
                     <Text style={styles.menuText}>Contact</Text>
                 </TouchableOpacity>
             </View>

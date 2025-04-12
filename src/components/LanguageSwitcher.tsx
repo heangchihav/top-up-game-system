@@ -15,6 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Language, VALID_LANGUAGES, useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { usePathname, useRouter } from 'expo-router';
 
 const languages = [
   { code: 'en', name: 'English', avatar: 'https://res.cloudinary.com/da8ox9rlr/image/upload/flags/1x1/sh_myho2n.jpg' },
@@ -35,7 +36,8 @@ export default function LanguageSwitcher() {
   const screenHeight = Dimensions.get('window').height;
   const screenWidth = Dimensions.get('window').width;
   const DROPDOWN_HEIGHT = languages.length * 45 + 20; // Estimate height
-
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
     if (dropdownVisible) {
       buttonRef.current?.measureInWindow((x, y, width, height) => {
@@ -64,15 +66,19 @@ export default function LanguageSwitcher() {
     }
   }, [dropdownVisible]);
 
-  const handleLanguageChange = useCallback(
-    (newLanguage: Language) => {
-      if (VALID_LANGUAGES.includes(newLanguage)) {
-        setLanguage(newLanguage);
-        setDropdownVisible(false);
-      }
-    },
-    [setLanguage]
-  );
+  const handleLanguageChange = useCallback(async (newLanguage: Language) => {
+    if (VALID_LANGUAGES.includes(newLanguage)) {
+      setLanguage(newLanguage);
+
+      // Keep everything after the language segment
+      const pathSegments = pathname.split('/');
+      const remainingPath = pathSegments.slice(2).join('/');
+
+      // Navigate to same path with new language
+      router.push(`/${newLanguage}/${remainingPath}` as any);
+      setDropdownVisible(false);
+    }
+  }, [setLanguage, router, pathname]);
 
   const getLanguageIcon = (languageCode: string) => {
     const lang = languages.find((l) => l.code === languageCode);

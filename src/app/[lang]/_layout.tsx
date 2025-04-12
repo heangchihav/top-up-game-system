@@ -1,27 +1,53 @@
-import { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider as NavigationThemeProvider, useNavigation } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import { View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useIsLargeScreen } from '@/hooks/useIsLargeScreen';
-import { useLocalSearchParams } from 'expo-router';
-import TabsNavigator from '@/navigation/TabsNavigator';
-import StackNavigator from '@/navigation/StackNavigator';
+import Navbar from '@/components/Navbar';
+import { Language, useLanguage } from '../../contexts/LanguageContext';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ContactPage from '@/screens/ContactScreen';
+import SmallScreenNav from '@/components/SmallScreenNav';
 import ModalComponent from '@/components/Modal';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SplashScreen, Tabs, usePathname } from 'expo-router';
+import { useIsLargeScreen } from '@/hooks/useIsLargeScreen';
+import { useTheme } from '@/contexts/ThemeContext';
+import HomeScreen from '@/screens/HomeScreen';
+import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ContactScreen from '@/screens/ContactScreen';
 
-export default function LanguageLayout() {
-  const { theme } = useTheme();
-  const { setLanguage } = useLanguage();
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+
+const LanguageLayout = () => {
+  const { isDark } = useTheme();
+  const { language } = useLanguage();
   const isLargeScreen = useIsLargeScreen();
-  const isDarkMode = theme === 'dark';
-  const { lang } = useLocalSearchParams<{ lang: string }>();
+  const [loaded] = useFonts({
+    SpaceMono: require('../../../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+  const pathname = usePathname();
+  const { setLanguage } = useLanguage();
   const [newsModalVisible, setNewsModalVisible] = useState(false);
-  // Update language when route param changes
+  const navigation = useNavigation();
+  const Tabs = createBottomTabNavigator();
+  const Stack = createStackNavigator();
+
   useEffect(() => {
-    if (lang) {
-      setLanguage(lang as 'en' | 'fr');
-    }
+    const handleLanguageChange = async () => {
+      const urlLanguage = (pathname.split('/')[1] as Language);
+      const validLanguages: Language[] = ['en', 'fr'];
+      if (validLanguages.includes(urlLanguage)) {
+        setLanguage(urlLanguage);
+        await AsyncStorage.setItem('language', urlLanguage);
+      } else {
+        navigation.goBack();
+      }
+    };
+
     async function initialize() {
       const hasVisited = await AsyncStorage.getItem('hasVisited');
       if (!hasVisited) {
@@ -29,21 +55,75 @@ export default function LanguageLayout() {
         await AsyncStorage.setItem('hasVisited', 'true');
       }
     }
+
+    handleLanguageChange();
     initialize();
-  }, [lang, setLanguage]);
+
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, pathname, setLanguage]);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: isDarkMode ? '#1a1a1a' : '#ffffff' }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: isDark ? 'black' : '#ffffff' }}>
+      {/* <View style={{ flex: 1 }}> */}
       {isLargeScreen ? (
-        // Navbar for Large Screens
-        <StackNavigator />
+        <View style={{ flex: 1, backgroundColor: isDark ? '#000b59' : '#ffffff' }}>
+          <View style={{ height: 0.05, backgroundColor: isDark ? '#1a1a1a' : '#ffffff' }}></View>
+          <Stack.Navigator initialRouteName="index" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" component={HomeScreen} />
+            <Stack.Screen name="contact" component={ContactPage} />
+          </Stack.Navigator>
+        </View>
       ) : (
-        // Bottom Tabs for Small Screens
-        <TabsNavigator />
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={{ zIndex: 1 }}>
+            <SmallScreenNav />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Tabs.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarStyle: {
+                  backgroundColor: isDark ? '#1a1a1a' : 'white',
+                  borderTopColor: isDark ? '#333' : '#e5e5e5',
+                },
+                tabBarActiveTintColor: '#007AFF',
+                tabBarInactiveTintColor: isDark ? '#888' : '#666',
+              }}
+            >
+              <Tabs.Screen
+                name="index"
+                component={HomeScreen}
+                options={{
+                  title: language === 'fr' ? 'Accueil' : 'Home',
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />
+                  ),
+                }}
+              />
+              <Tabs.Screen
+                name="contact"
+                component={ContactScreen}
+                options={{
+                  title: language === 'fr' ? 'Compte' : 'Account',
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />
+                  ),
+                }}
+              />
+            </Tabs.Navigator>
+          </View>
+        </SafeAreaView>
       )}
-      <ModalComponent
-        visible={newsModalVisible}
-        onClose={() => setNewsModalVisible(false)}
-      />
+      {/* </View> */}
+      <ModalComponent visible={newsModalVisible} onClose={() => setNewsModalVisible(false)} />
     </GestureHandlerRootView>
   );
 }
+
+export default LanguageLayout;

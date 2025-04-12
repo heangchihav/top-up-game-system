@@ -1,55 +1,51 @@
-// components/Card.tsx
-import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 interface CardProps {
-    title: string;
-    description?: string;
-    imageUrl?: string;
-    onPress?: () => void;
+  title: string;
+  image: string;
+  screen: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, imageUrl, onPress }) => {
-    return (
-        <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
-            {imageUrl && <Image source={{ uri: imageUrl }} style={styles.image} />}
-            <View style={styles.content}>
-                <Text style={styles.title}>{title}</Text>
-                {description && <Text style={styles.description}>{description}</Text>}
-            </View>
-        </TouchableOpacity>
-    );
+const Card: React.FC<CardProps> = ({ title, image, screen }) => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate(screen as never)}
+      style={styles.card}
+    >
+      <Image source={{ uri: image }} style={styles.image} />
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
 };
 
 export default Card;
 
 const styles = StyleSheet.create({
-    card: {
-        backgroundColor: "#fff",
-        borderRadius: 16,
-        elevation: 4,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        marginVertical: 10,
-        marginHorizontal: 20,
-        overflow: "hidden",
-    },
-    image: {
-        width: 180,
-        height: 180,
-    },
-    content: {
-        padding: 16,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: "600",
-        marginBottom: 8,
-    },
-    description: {
-        fontSize: 14,
-        color: "#666",
-    },
+  card: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 30,
+    padding: 12,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    aspectRatio: 4 / 3,
+    borderRadius: 20,
+    resizeMode: 'cover',
+  },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 8,
+    margin: 10,
+    width: '100%',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
 });
