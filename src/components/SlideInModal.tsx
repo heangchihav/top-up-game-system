@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Modal, View, Text, StyleSheet, Dimensions, ImageBackground, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Image } from 'react-native';
 
 import { BlurView } from 'expo-blur';
-import AvatarModal from './AvatarModal';
 import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withSpring, withDelay } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { MenuItem, SlideInModalProps } from '../types/types';
 import { useTheme } from '@/contexts/ThemeContext';
+import UserProfile from './userProfile';
 
 const SlideInModal: React.FC<SlideInModalProps> = ({ visible, closeModal }) => {
   const { isDark } = useTheme();
@@ -19,15 +19,8 @@ const SlideInModal: React.FC<SlideInModalProps> = ({ visible, closeModal }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const menuItems: MenuItem[] = [
-    { id: '1', title: 'Sport', screen: 'SportScreen' },
-    { id: '2', title: 'Live Casino', screen: 'LiveCasinoScreen' },
-    { id: '3', title: 'Slots', screen: 'SlotsScreen' },
-    { id: '4', title: 'Fishing Games', screen: 'FishingGamesScreen' },
-    { id: '5', title: 'Number', screen: 'NumberScreen' },
-    { id: '6', title: 'Poker', screen: 'PokerScreen' },
-    { id: '7', title: 'Lottery', screen: 'LotteryScreen' },
-    { id: '8', title: 'Cockfight', screen: 'CockfightScreen' },
-    { id: '9', title: 'Promotion', screen: 'PromotionScreen' },
+    { id: '1', title: 'Contact', screen: 'contact' },
+  
   ];
 
   useEffect(() => {
@@ -84,7 +77,7 @@ const SlideInModal: React.FC<SlideInModalProps> = ({ visible, closeModal }) => {
 
                   {/* Wrap AvatarModal if needed, and position it */}
                   <View style={styles.avatarWrapper}>
-                    <AvatarModal />
+                    <UserProfile/>
                   </View>
                 </View>
 

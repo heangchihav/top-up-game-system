@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from 'react-native';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
-import AvatarModal from './AvatarModal';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/navigation';
+import UserProfile from './userProfile';
 const Navbar: React.FC = () => {
     const { isDark } = useTheme();
 
@@ -42,7 +42,7 @@ const Navbar: React.FC = () => {
             <View style={styles.rightSection}>
                 <ThemeSwitcher />
                 <LanguageSwitcher />
-                <AvatarModal />
+                <UserProfile/>
             </View>
         </View>
     );

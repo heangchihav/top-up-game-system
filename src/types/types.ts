@@ -8,9 +8,7 @@ export interface User {
 }
 
 export interface UserProfileProps {
-  user: User;
-  onPress: () => void;
-  visible: any;
+  
 }
 
 export type MenuItem = {
