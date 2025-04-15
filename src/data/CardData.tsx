@@ -23,7 +23,7 @@ export const data: SectionData[] = [
                     { id: '3', title: 'Coming Soon', image: 'https://www.figma.com/community/resource/88692791-d615-4056-80f5-cb1d6f86ed57/thumbnail', screen: 'movie1' },
                     { id: '4', title: 'Coming Soon', image: 'https://cdn6.aptoide.com/imgs/a/f/8/af8a8b13af897c49d130ff240ae4fec1_icon.jpg', screen: 'movie2' },
                     { id: '3', title: 'Coming Soon', image: 'https://cccbic.org/businesses/844-logo.jpg', screen: 'movie1' },
-                    { id: '4', title: 'Coming Soon', image: 'https://yt3.googleusercontent.com/TFmwswhRQVKpjrlubdDkkXeB4WpshI2GISwyYwkyFyr2ujkiCnlKhU4uDveRcBltqhmNAHxSqTw=s900-c-k-c0x00ffffff-no-rj', screen: 'movie2' },
+                    { id: '4', title: 'Coming Soon', image: 'https://i.imgur.com/4gLcbSH.png', screen: 'movie2' },
                 ],
             },
         ],

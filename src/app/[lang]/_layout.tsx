@@ -69,11 +69,10 @@ const LanguageLayout = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: isDark ? 'black' : '#ffffff' }}>
-      {/* <View style={{ flex: 1 }}> */}
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: isDark ? '#000000' : '#ffffff' }}>
       {isLargeScreen ? (
-        <View style={{ flex: 1, backgroundColor: isDark ? '#000b59' : '#ffffff' }}>
-          <View style={{ height: 0.05, backgroundColor: isDark ? '#1a1a1a' : '#ffffff' }}></View>
+        <View style={{ flex: 1}}>
+          <View style={{ height: 1}}></View>
           <Stack.Navigator initialRouteName="index" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" component={HomeScreen} />
             <Stack.Screen name="contact" component={ContactPage} />
@@ -120,7 +119,7 @@ const LanguageLayout = () => {
           </View>
         </SafeAreaView>
       )}
-      {/* </View> */}
+
       <ModalComponent visible={newsModalVisible} onClose={() => setNewsModalVisible(false)} />
     </GestureHandlerRootView>
   );

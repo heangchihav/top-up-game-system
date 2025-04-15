@@ -174,19 +174,18 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 9,
-    paddingVertical: 5,
+    justifyContent: 'center',
+    backgroundColor: '#003566',
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#ff9300',
+    borderColor: '#8da9c4',
     gap: 2,
     width: 40,
     height: 40,
   },
   buttonDark: {
-    backgroundColor: '#000000',
-    borderColor: '#ff9300',
+    backgroundColor: '#003566',
+    borderColor: '#8da9c4',
   },
   flagIcon: {
     width: 20,
@@ -209,8 +208,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   dropdownDark: {
-    backgroundColor: '#000000',
-    borderColor: '#ff9300',
+    backgroundColor: '#003566',
+    borderColor: '#8da9c4',
   },
   dropdownItem: {
     flexDirection: 'row',
@@ -218,17 +217,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     gap: 10,
-    borderColor: '#ff9300'
+    borderColor: '#8da9c4'
   },
   dropdownText: {
     fontSize: 14,
-    color: '#ff9300',
+    color: '#8da9c4',
   },
   activeText: {
     fontWeight: '600',
   },
   textDark: {
-    color: '#ff9300',
+    color: '#8da9c4',
   },
   activeItem: {
     backgroundColor: '#f0f0f0',

@@ -171,7 +171,7 @@ export default function ThemeSwitcher() {
                       <Ionicons
                         name="checkmark"
                         size={16}
-                        color={isDark ? '#fff' : '#000'}
+                        color={isDark ? '#003566' : '#000'}
                         style={{ marginLeft: 'auto' }}
                       />
                     )}
@@ -194,22 +194,22 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#003566',
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#ff9300',
+    borderColor: '#8da9c4',
     width: 40,
     height: 40,
     justifyContent: 'center',
   },
   buttonDark: {
-    backgroundColor: '#000000',
-    borderColor: '#ff9300',
+    backgroundColor: '#003566',
+    borderColor: '#8da9c4',
   },
   textDark: {
-    color: '#ff9300',
+    color: '#8da9c4',
   },
   modalBackdrop: {
     flex: 1,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffff',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
   },
   dropdownDark: {
-    backgroundColor: '#000000',
-    borderColor: '#ff9300',
+    backgroundColor: '#003566',
+    borderColor: '#8da9c4',
   },
   dropdownItem: {
     flexDirection: 'row',
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 14,
-    color: '#ff9300',
+    color: '#8da9c4',
   },
   activeText: {
     fontWeight: '600',

@@ -14,8 +14,8 @@ import { data } from '@/data/CardData';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import { useIsLargeScreen } from '@/hooks/useIsLargeScreen';
+import GameButton from '@/components/GameButton';
 
-// Types
 interface CardItem {
   id: string | number;
   title: string;
@@ -31,22 +31,17 @@ interface SectionData {
   [key: string]: [CategoryData, { [key: string]: CardItem[] }];
 }
 
-// Responsive card sizing
 const screenWidth = Dimensions.get('window').width;
-const maxCardWidth = 300;
-const spacing = 20;
-const numColumns = Math.floor(screenWidth / (maxCardWidth + spacing));
-const cardWidth = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
 export default function HomeScreen(): JSX.Element {
   const { isDark } = useTheme();
   const { language } = useLanguage();
   const isLargeScreen = useIsLargeScreen();
+
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? '#000b59' : '#ffffff' }}>
       {isLargeScreen && <Navbar />}
 
-      {/* Scrollable content */}
       <ScrollView
         style={[
           styles.container,
@@ -55,7 +50,15 @@ export default function HomeScreen(): JSX.Element {
         contentContainerStyle={styles.scrollContent}
       >
         <Slider />
+        <View style={ styles.sectionButton }>
 
+        <GameButton title="Popular" onPress={() => console.log('Game button pressed')} />
+        <GameButton title="Game" onPress={() => console.log('Game button pressed')} />
+        <GameButton title="App" onPress={() => console.log('Game button pressed')} />
+
+
+        </View>
+       
         {(data as SectionData[]).map((section, index) => {
           const categoryKey = Object.keys(section)[0];
           const [categoryMeta, itemsData] = section[categoryKey];
@@ -70,12 +73,26 @@ export default function HomeScreen(): JSX.Element {
                     {categoryMeta.title}
                   </Text>
                 </View>
-
+               
                 <View style={styles.grid}>
                   {items.map((item: CardItem) => (
                     <View
                       key={item.id}
-                      style={[styles.cardWrapper, { width: cardWidth }]}
+                      style={[
+                        styles.cardWrapper,
+                        {
+                          flexBasis:
+                            screenWidth >= 1600
+                              ? '19%'      // 5 per row
+                              : screenWidth >= 1280
+                              ? '23.5%'    // 4 per row
+                              : screenWidth >= 1024
+                              ? '30.5%'    // 3 per row
+                              : screenWidth >= 280
+                              ? '47.5%'    // 2 per row (small phones and up)
+                              : '100%',    // super small (smartwatch etc.)
+                        },
+                      ]}
                     >
                       <Card
                         title={item.title}
@@ -96,7 +113,6 @@ export default function HomeScreen(): JSX.Element {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 2,
@@ -104,6 +120,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: 'center',
     paddingVertical: 16,
+  },
+  sectionButton:{
+    width: '100%',
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10, // Optional, use if you want some spacing between sections
   },
   sectionWrapper: {
     width: '100%',
@@ -126,9 +151,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    width: '100%',
+    gap: 10, // Optional, use if you want some spacing between cards
   },
   cardWrapper: {
-    margin: spacing / 2,
+    marginVertical: 10,
   },
 });
