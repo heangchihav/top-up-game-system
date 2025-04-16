@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,7 +30,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ThemeProvider>
         <LanguageProvider >
-          <Stack screenOptions={{ headerShown: false }} />
+          <AuthProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
     </SafeAreaProvider>

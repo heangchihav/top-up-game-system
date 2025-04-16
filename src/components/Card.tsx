@@ -5,10 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 interface CardProps {
   title: string;
   image: string;
+  status: string;
   screen: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, image, screen }) => {
+const Card: React.FC<CardProps> = ({ title, image, screen, status }) => {
   const navigation = useNavigation();
 
   return (
@@ -17,7 +18,7 @@ const Card: React.FC<CardProps> = ({ title, image, screen }) => {
       style={styles.card}
     >
       <Image source={{ uri: image }} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title, status === 'active' ? { backgroundColor: 'rgb(255, 255, 255)', } : { backgroundColor: 'rgba(255, 255, 255, 0.5)' }]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -46,6 +47,6 @@ const styles = StyleSheet.create({
     margin: 10,
     width: '100%',
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+
   },
 });

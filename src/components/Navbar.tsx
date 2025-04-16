@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Platform, Button } from 'react-native';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcherButton';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -7,14 +7,22 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types/navigation';
 import UserProfile from './userProfile';
+import { Colors } from '@/constants/Colors';
+import LoginSignupModal from './LoginSignupModal';
+import { LinearGradient } from 'expo-linear-gradient';
 const Navbar: React.FC = () => {
     const { isDark } = useTheme();
-
+    const [visible, setVisible] = useState(false);
     type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
     const navigation = useNavigation<NavigationProp>();
     return (
-        <View style={[styles.navbar, { backgroundColor: isDark ? 'black' : '#c3e6ff' }]}>
-            {/* Left: Logo */}
+        <LinearGradient
+            colors={['#0d2c61', '#7ea4cb']} // dark to light blue
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.navbar}
+        >
+
             <View style={styles.leftSection}>
                 <Image
                     source={{ uri: 'https://i.imgur.com/QnX5mel.png' }}
@@ -40,24 +48,33 @@ const Navbar: React.FC = () => {
 
             {/* Right: Avatar / Theme */}
             <View style={styles.rightSection}>
+
                 <ThemeSwitcher />
                 <LanguageSwitcher />
-                <UserProfile/>
+                <View style={{}}>
+                    <LoginSignupModal visible={visible} onClose={() => setVisible(false)} />
+                    <TouchableOpacity onPress={() => setVisible(true)} style={styles.loginButton}>
+                        <Text style={styles.loginText}>LOGIN | SIGNUP</Text>
+                        <View style={styles.avatarWrapper}>
+                            <Image source={{ uri: 'https://i.pravatar.cc/100' }} style={styles.avatar} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {/* <UserProfile /> */}
             </View>
-        </View>
+        </LinearGradient>
+
     );
 };
 
 const styles = StyleSheet.create({
     navbar: {
+        display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         margin: 10,
         marginHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ff9300',
+        borderWidth: 4,
         padding: 2,
         backdropFilter: Platform.OS === 'web' ? 'blur(10px)' : undefined,
         shadowColor: '#000',
@@ -66,9 +83,49 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         elevation: 5,
         paddingHorizontal: 10,
+        borderColor: '#9bbde0',
     },
+
+    shadowContainer: {
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 6 },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+        elevation: 8,
+    },
+    loginButton: {
+        borderWidth: 3,
+        borderColor: Colors.secondary,
+        backgroundColor: Colors.yellow,
+        flexDirection: 'row',
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        borderRadius: 50,
+    },
+    loginText: {
+        fontSize: 14,
+        color: Colors.primarry,
+        marginHorizontal: 10,
+        fontWeight: 'bold',
+    },
+    avatarWrapper: {
+        borderRadius: 50,
+        borderWidth: 3,
+        borderColor: Colors.yellow,
+
+    },
+    avatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 18,
+    },
+
     leftSection: {
         justifyContent: 'center',
+        alignItems: 'flex-start',
+        width: '30%'
     },
     logo: {
         width: 140,
@@ -78,20 +135,24 @@ const styles = StyleSheet.create({
     centerSection: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 12,
+        width: '40%'
     },
     menuItem: {
         marginHorizontal: 8,
     },
     menuText: {
         fontSize: 16,
-        letterSpacing: 2,
-        color: '#ff9300',
+        fontWeight: 'bold',
+        color: Colors.dark.text,
     },
     rightSection: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
+        justifyContent: 'flex-end',
+        width: '30%'
     },
 });
 

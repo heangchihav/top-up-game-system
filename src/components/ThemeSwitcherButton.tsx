@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeType, useTheme } from '@/contexts/ThemeContext';
+import { Colors } from '@/constants/Colors';
 
 export default function ThemeSwitcher() {
   const { theme, isDark, setTheme } = useTheme();
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#003566',
+    backgroundColor: Colors.dark.background,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 50,

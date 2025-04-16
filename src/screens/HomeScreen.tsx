@@ -18,6 +18,7 @@ import GameButton from '@/components/GameButton';
 
 interface CardItem {
   id: string | number;
+  status: string;
   title: string;
   image: string;
   screen: string;
@@ -50,15 +51,15 @@ export default function HomeScreen(): JSX.Element {
         contentContainerStyle={styles.scrollContent}
       >
         <Slider />
-        <View style={ styles.sectionButton }>
+        <View style={styles.sectionButton}>
 
-        <GameButton title="Popular" onPress={() => console.log('Game button pressed')} />
-        <GameButton title="Game" onPress={() => console.log('Game button pressed')} />
-        <GameButton title="App" onPress={() => console.log('Game button pressed')} />
+          <GameButton title="Popular" onPress={() => console.log('Game button pressed')} />
+          <GameButton title="Game" onPress={() => console.log('Game button pressed')} />
+          <GameButton title="App" onPress={() => console.log('Game button pressed')} />
 
 
         </View>
-       
+
         {(data as SectionData[]).map((section, index) => {
           const categoryKey = Object.keys(section)[0];
           const [categoryMeta, itemsData] = section[categoryKey];
@@ -73,7 +74,7 @@ export default function HomeScreen(): JSX.Element {
                     {categoryMeta.title}
                   </Text>
                 </View>
-               
+
                 <View style={styles.grid}>
                   {items.map((item: CardItem) => (
                     <View
@@ -85,16 +86,17 @@ export default function HomeScreen(): JSX.Element {
                             screenWidth >= 1600
                               ? '19%'      // 5 per row
                               : screenWidth >= 1280
-                              ? '23.5%'    // 4 per row
-                              : screenWidth >= 1024
-                              ? '30.5%'    // 3 per row
-                              : screenWidth >= 280
-                              ? '47.5%'    // 2 per row (small phones and up)
-                              : '100%',    // super small (smartwatch etc.)
+                                ? '23.5%'    // 4 per row
+                                : screenWidth >= 1024
+                                  ? '30.5%'    // 3 per row
+                                  : screenWidth >= 280
+                                    ? '47.5%'    // 2 per row (small phones and up)
+                                    : '100%',    // super small (smartwatch etc.)
                         },
                       ]}
                     >
                       <Card
+                        status={item.status}
                         title={item.title}
                         image={item.image}
                         screen={item.screen}
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
   },
-  sectionButton:{
+  sectionButton: {
     width: '100%',
     alignItems: 'center',
     display: 'flex',
