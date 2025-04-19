@@ -6,12 +6,35 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ActivityIndicator, View } from 'react-native';
+import { useAuth } from '@/hooks/useAuth';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function InnerLayout() {
+  const { isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </LanguageProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
+}
+
+export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -27,14 +50,8 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <LanguageProvider >
-          <AuthProvider>
-            <Stack screenOptions={{ headerShown: false }} />
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <AuthProvider>
+      <InnerLayout />
+    </AuthProvider>
   );
 }

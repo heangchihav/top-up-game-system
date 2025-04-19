@@ -10,11 +10,24 @@ import UserProfile from './userProfile';
 import { Colors } from '@/constants/Colors';
 import LoginSignupModal from './LoginSignupModal';
 import { LinearGradient } from 'expo-linear-gradient';
+
+
 const Navbar: React.FC = () => {
     const { isDark } = useTheme();
     const [visible, setVisible] = useState(false);
+    const [action, setAction] = useState<string>(); // false for login, true for signup
     type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
     const navigation = useNavigation<NavigationProp>();
+    const handleLogin = () => {
+        setAction('login');
+        setVisible(true);
+    };
+
+    const handleSignup = () => {
+        setAction('signup');
+        setVisible(true);
+    };
+
     return (
         <LinearGradient
             colors={['#0d2c61', '#7ea4cb']} // dark to light blue
@@ -51,14 +64,21 @@ const Navbar: React.FC = () => {
 
                 <ThemeSwitcher />
                 <LanguageSwitcher />
-                <View style={{}}>
-                    <LoginSignupModal visible={visible} onClose={() => setVisible(false)} />
-                    <TouchableOpacity onPress={() => setVisible(true)} style={styles.loginButton}>
-                        <Text style={styles.loginText}>LOGIN | SIGNUP</Text>
-                        <View style={styles.avatarWrapper}>
-                            <Image source={{ uri: 'https://i.pravatar.cc/100' }} style={styles.avatar} />
-                        </View>
-                    </TouchableOpacity>
+                <View style={styles.loginButton}>
+                    <LoginSignupModal visible={visible} onClose={() => setVisible(false)} action={action || 'login'} />
+                    <View style={styles.loginText}>
+                        <TouchableOpacity onPress={() => handleLogin()} >
+                            <Text style={styles.text}>LOGIN </Text>
+                        </TouchableOpacity>
+                        <View><Text style={styles.text}>|</Text></View>
+                        <TouchableOpacity onPress={() => handleSignup()} >
+                            <Text style={styles.text}>SIGNUP</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.avatarWrapper}>
+                        <Image source={{ uri: 'https://i.pravatar.cc/100' }} style={styles.avatar} />
+                    </View>
+
                 </View>
                 {/* <UserProfile /> */}
             </View>
@@ -94,6 +114,12 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
         elevation: 8,
     },
+    text: {
+        color: Colors.light.text,
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+
     loginButton: {
         borderWidth: 3,
         borderColor: Colors.secondary,
@@ -105,10 +131,13 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     loginText: {
-        fontSize: 14,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 5,
         color: Colors.primarry,
         marginHorizontal: 10,
-        fontWeight: 'bold',
     },
     avatarWrapper: {
         borderRadius: 50,

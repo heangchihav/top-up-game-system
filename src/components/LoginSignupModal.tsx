@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,46 +9,82 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
-  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigation } from '@react-navigation/native';
 
 interface Props {
   visible: boolean;
+  action: string; // "login" or "signup"
   onClose: () => void;
 }
 
-const LoginSignupModal: React.FC<Props> = ({ visible, onClose }) => {
-  const [isLogin, setIsLogin] = useState(true);
+const LoginSignupModal: React.FC<Props> = ({ visible, onClose, action }) => {
+  const [authOption, setAuthOption] = useState<string>(action);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null); // To store error message
+  const { login, signup } = useAuth();
+  const navigation = useNavigation();
+
+  const handleSubmit = async () => {
+    if (!username || !password) {
+      setError('Please enter both username and password');
+      return;
+    }
+    setError(null); // Reset error message on submit
+
+    try {
+      const success =
+        authOption === 'login'
+          ? await login(username, password)
+          : await signup(username, password);
+
+      if (success) {
+        onClose();
+        navigation.navigate('index' as never);
+      } else {
+        setError('Invalid credentials. Please try again.');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    if (visible) {
+      setAuthOption(action); // reset option on modal open
+      setUsername('');
+      setPassword('');
+      setError(null); // Reset error on modal open
+    }
+  }, [visible, action]);
 
   return (
     <Modal visible={visible} animationType="fade" transparent>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.blurWrapper}>
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.modalCenter}>
-              <TouchableWithoutFeedback onPress={() => { }}>
+              <TouchableWithoutFeedback>
                 <View style={styles.modalBox}>
-
-                  {/* Close Button (Top Right) */}
                   <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                     <Ionicons name="close" size={24} color="#333" />
                   </TouchableOpacity>
 
-                  {/* Icon */}
                   <Image
                     source={{ uri: 'https://i.imgur.com/QnX5mel.png' }}
                     style={styles.icon}
                   />
 
-                  <Text style={styles.title}>{isLogin ? 'LOGIN NOW' : 'SIGN UP'}</Text>
+                  <Text style={styles.title}>
+                    {authOption === 'login' ? 'LOGIN NOW' : 'SIGN UP'}
+                  </Text>
 
-                  {/* Username */}
                   <View style={styles.inputWrapper}>
                     <FontAwesome name="user" size={20} color="#888" style={styles.iconInput} />
                     <TextInput
@@ -60,7 +96,10 @@ const LoginSignupModal: React.FC<Props> = ({ visible, onClose }) => {
                     />
                   </View>
 
-                  {/* Password */}
+                  {error && !username && (
+                    <Text style={styles.errorText}>{error}</Text>
+                  )}
+
                   <View style={styles.inputWrapper}>
                     <MaterialIcons name="lock-outline" size={20} color="#888" style={styles.iconInput} />
                     <TextInput
@@ -73,30 +112,34 @@ const LoginSignupModal: React.FC<Props> = ({ visible, onClose }) => {
                     />
                   </View>
 
-                  {/* Switch to sign up / login */}
+                  {error && !password && (
+                    <Text style={styles.errorText}>{error}</Text>
+                  )}
+
                   <View style={styles.switchText}>
                     <Text style={styles.text}>
-                      {isLogin ? 'no have an account?' : 'Already have an account?'}
+                      {authOption === 'login' ? "Don't have an account?" : 'Already have an account?'}
                     </Text>
-                    <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
-                      <Text style={styles.link}>{isLogin ? ' sign up' : ' login'}</Text>
+                    <TouchableOpacity
+                      onPress={() => setAuthOption(authOption === 'login' ? 'signup' : 'login')}
+                    >
+                      <Text style={styles.link}>
+                        {authOption === 'login' ? ' Sign up' : ' Login'}
+                      </Text>
                     </TouchableOpacity>
                   </View>
 
-                  {/* Submit Button */}
-                  <TouchableOpacity style={styles.submitButton}>
-                    <LinearGradient
-                      colors={['#0072ff', '#00c6ff']}
-                      style={styles.gradient}
-                    >
-                      <Text style={styles.submitText}>Submit</Text>
+                  {/* Submit */}
+                  <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                    <LinearGradient colors={['#0072ff', '#00c6ff']} style={styles.gradient}>
+                      <Text style={styles.submitText}>
+                        {authOption === 'login' ? 'Login' : 'Sign Up'}
+                      </Text>
                     </LinearGradient>
                   </TouchableOpacity>
 
-                  {/* Divider */}
                   <Text style={styles.or}>────────── or ──────────</Text>
 
-                  {/* Google Login */}
                   <TouchableOpacity style={styles.googleButton}>
                     <Image
                       source={{ uri: 'https://i.imgur.com/qaTnbcx.png' }}
@@ -104,7 +147,6 @@ const LoginSignupModal: React.FC<Props> = ({ visible, onClose }) => {
                     />
                     <Text style={styles.googleText}>Continue with Google</Text>
                   </TouchableOpacity>
-
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -223,5 +265,11 @@ const styles = StyleSheet.create({
   googleText: {
     marginLeft: 10,
     color: '#333',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 4,
+    marginBottom: 8,
   },
 });
